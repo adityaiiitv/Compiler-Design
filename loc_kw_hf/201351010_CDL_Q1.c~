@@ -1,0 +1,107 @@
+/* Aditya Prakash 201351010 */
+#include<stdio.h>
+#include<string.h>
+int main()				// MAIN FUNCTION
+{	
+	FILE *fh,*fh1,*fh2;
+	int com_lines=0,i;
+	char s[100];
+	if ( ( fh = fopen( "CD_lab1.c", "r" ) ) == NULL )
+	{
+		printf( "File could not be opened\n" );			// TRY TO OPEN
+	}
+	while ( fgets ( s, 99, fh ) != NULL )
+	{	
+		printf ( "%s" , s ) ;
+		// commented lines
+		// single comments
+		for(i=0;i<strlen(s);i++)
+		{
+			if(s[i]=='/' && s[i+1]=='/')
+			{
+				com_lines++;							// SINGLE LINE COMMENTS ++
+			}
+		}						
+	}
+	
+	// multi comments
+	if ( ( fh1 = fopen( "CD_lab1.c", "r" ) ) == NULL )
+	{
+		printf( "File could not be opened\n" );
+	}
+	int begin=0,j=0;
+	while ( fgets ( s, 99, fh1 ) != NULL )
+	{
+		if(begin==1)
+		{
+			for(i=0;i<strlen(s);i++)
+			{
+				if(s[i]=='*' && s[i+1]=='/')
+				{
+					printf ( "%s" , s ) ;
+					begin = 0;
+					com_lines++;
+				}
+			}
+			if(begin == 1)
+			{
+				printf ( "%s" , s ) ;
+				com_lines++;
+			}
+		}
+		
+		if(begin==0)
+		{
+			for(i=0;i<strlen(s);i++)
+			{
+				if(s[i]=='/' && s[i+1]=='*')
+				{
+					j=i;
+					begin = 1;
+				}
+			}
+			if(begin == 1)
+			{
+				printf ( "%s" , s ) ;
+				com_lines++;
+			}
+			for(i=j;i<strlen(s);i++)
+			{
+				if(s[i]=='*' && s[i+1]=='/')
+				{
+					begin = 0;
+				}
+			}
+		}
+		
+	}															// LOGIC FOR MULTI LINE COMMENTS END
+	// for executable lines
+	if ( ( fh2 = fopen( "CD_lab1.c", "r" ) ) == NULL )
+	{
+		printf( "File could not be opened\n" );
+	}
+	int exe_lines=0;
+	while ( fgets ( s, 99, fh2 ) != NULL )
+	{
+		for(i=0;i<strlen(s);i++)
+		{
+			if(s[i]=='\n')
+			{
+				exe_lines++;
+			}
+		}
+		if(strlen(s)==2)
+		{
+			exe_lines--;
+		}
+	}
+	exe_lines = exe_lines-com_lines;
+	// commented lines code end
+	fclose ( fh ) ;
+	fclose ( fh1 ) ;
+	fclose ( fh2 ) ;
+	printf("\n The total number of commented lines in the code: %d", com_lines);
+	printf("\n The total number of executable lines in the code: %d", exe_lines);
+	return 0;
+}
+// END OF CODE
